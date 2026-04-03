@@ -45,3 +45,51 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
+
+
+class Payment(models.Model):
+    CASH = 'cash'
+    TRANSFER = 'transfer'
+
+    PAYMENT_METHOD_CHOICES = [
+        (CASH, 'Наличные'),
+        (TRANSFER, 'Перевод на счет'),
+    ]
+
+    user = models.ForeignKey(
+        'users.User',
+        on_delete=models.CASCADE,
+        related_name='payments',
+        verbose_name='пользователь'
+    )
+    payment_date = models.DateTimeField(verbose_name='дата оплаты')
+    paid_course = models.ForeignKey(
+        'materials.Course',
+        on_delete=models.CASCADE,
+        related_name='course_payments',
+        blank=True,
+        null=True,
+        verbose_name='оплаченный курс'
+    )
+    paid_lesson = models.ForeignKey(
+        'materials.Lesson',
+        on_delete=models.CASCADE,
+        related_name='lesson_payments',
+        blank=True,
+        null=True,
+        verbose_name='оплаченный урок'
+    )
+    amount = models.PositiveIntegerField(verbose_name='сумма оплаты')
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHOD_CHOICES,
+        verbose_name='способ оплаты'
+    )
+
+    def __str__(self):
+        return f'{self.user} - {self.amount}'
+
+    class Meta:
+        verbose_name = 'платеж'
+        verbose_name_plural = 'платежи'
+        ordering = ['-payment_date']
