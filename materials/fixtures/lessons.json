@@ -1,0 +1,13 @@
+[
+  {
+    "model": "materials.lesson",
+    "pk": 1,
+    "fields": {
+      "course": 1,
+      "title": "Введение в DRF",
+      "description": "Первый урок по сериализаторам",
+      "preview": "",
+      "video_link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    }
+  }
+]
