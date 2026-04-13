@@ -1,10 +1,22 @@
+from django.conf import settings
 from django.db import models
 
 
 class Course(models.Model):
     title = models.CharField(max_length=255, verbose_name='название')
-    preview = models.ImageField(upload_to='materials/course_previews/', blank=True, null=True, verbose_name='превью')
+    preview = models.ImageField(
+        upload_to='materials/course_previews/',
+        blank=True,
+        null=True,
+        verbose_name='превью'
+    )
     description = models.TextField(blank=True, null=True, verbose_name='описание')
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='courses',
+        verbose_name='владелец'
+    )
 
     def __str__(self):
         return self.title
@@ -15,11 +27,27 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons', verbose_name='курс')
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='lessons',
+        verbose_name='курс'
+    )
     title = models.CharField(max_length=255, verbose_name='название')
     description = models.TextField(blank=True, null=True, verbose_name='описание')
-    preview = models.ImageField(upload_to='materials/lesson_previews/', blank=True, null=True, verbose_name='превью')
+    preview = models.ImageField(
+        upload_to='materials/lesson_previews/',
+        blank=True,
+        null=True,
+        verbose_name='превью'
+    )
     video_link = models.URLField(blank=True, null=True, verbose_name='ссылка на видео')
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='lessons',
+        verbose_name='владелец'
+    )
 
     def __str__(self):
         return self.title

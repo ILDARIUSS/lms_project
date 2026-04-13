@@ -4,18 +4,37 @@ from materials.models import Course, Lesson
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.id')
+
     class Meta:
         model = Lesson
-        fields = '__all__'
+        fields = (
+            'id',
+            'course',
+            'title',
+            'description',
+            'preview',
+            'video_link',
+            'owner',
+        )
 
 
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
     lessons_count = serializers.SerializerMethodField()
+    owner = serializers.ReadOnlyField(source='owner.id')
 
     class Meta:
         model = Course
-        fields = ('id', 'title', 'preview', 'description', 'lessons_count', 'lessons')
+        fields = (
+            'id',
+            'title',
+            'preview',
+            'description',
+            'owner',
+            'lessons_count',
+            'lessons',
+        )
 
     def get_lessons_count(self, obj):
         return obj.lessons.count()
