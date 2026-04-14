@@ -13,6 +13,11 @@ from users.serializers import (
     PaymentSerializer,
     CustomTokenObtainPairSerializer,
 )
+from users.services import (
+    create_stripe_product,
+    create_stripe_price,
+    create_stripe_session,
+)
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -67,7 +72,23 @@ class PaymentListCreateAPIView(generics.ListCreateAPIView):
         return Payment.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        payment = serializer.save(user=self.request.user)
+
+        item_name = 'Оплата курса'
+        if payment.paid_course:
+            item_name = payment.paid_course.title
+        elif payment.paid_lesson:
+            item_name = payment.paid_lesson.title
+
+        product = create_stripe_product(item_name)
+        price = create_stripe_price(product.id, payment.amount)
+        session = create_stripe_session(price.id)
+
+        payment.stripe_product_id = product.id
+        payment.stripe_price_id = price.id
+        payment.stripe_session_id = session.id
+        payment.payment_link = session.url
+        payment.save()
 
 
 class PaymentRetrieveAPIView(generics.RetrieveAPIView):

@@ -5,6 +5,8 @@ from users.models import User, Payment
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    payment_link = serializers.ReadOnlyField()
+
     class Meta:
         model = Payment
         fields = (
@@ -14,6 +16,7 @@ class PaymentSerializer(serializers.ModelSerializer):
             'paid_lesson',
             'amount',
             'payment_method',
+            'payment_link',
         )
 
 
