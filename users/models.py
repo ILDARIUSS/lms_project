@@ -87,6 +87,10 @@ class Payment(models.Model):
         choices=PAYMENT_METHOD_CHOICES,
         verbose_name='способ оплаты'
     )
+    stripe_product_id = models.CharField(max_length=255, blank=True, null=True, verbose_name='id продукта Stripe')
+    stripe_price_id = models.CharField(max_length=255, blank=True, null=True, verbose_name='id цены Stripe')
+    stripe_session_id = models.CharField(max_length=255, blank=True, null=True, verbose_name='id сессии Stripe')
+    payment_link = models.URLField(blank=True, null=True, verbose_name='ссылка на оплату')
 
     def __str__(self):
         return f'{self.user} - {self.amount}'
