@@ -17,6 +17,18 @@ class Course(models.Model):
         related_name='courses',
         verbose_name='владелец'
     )
+    subscribers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='subscribed_courses',
+        blank=True,
+        verbose_name='подписчики'
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        blank=True,
+        null=True,
+        verbose_name='дата обновления'
+    )
 
     def __str__(self):
         return self.title
